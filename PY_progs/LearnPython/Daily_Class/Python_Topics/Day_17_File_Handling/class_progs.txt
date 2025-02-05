@@ -1,0 +1,22 @@
+lstoffiles=[".docx",".js",".xml",".py",".html",".css",".exe",".pdf",".txt",".java",".cpp",".ppt"]
+os.chdir("C:/Users/Dell/Desktop/FileHandling/program")
+print(os.getcwd())
+print(random.choice(lstoffiles))
+for i in range(1000):
+    file=open(f"myfile{i}{random.choice(lstoffiles)}","w")
+    file.close()
+
+
+lstoffiles=[".docx",".js",".xml",".py",".html",".css",".exe",".pdf",".txt",".java",".cpp",".ppt"]
+os.chdir("C:/Users/Dell/Desktop/FileHandling/program")
+for i in os.listdir():
+    os.remove(f"C:/Users/Dell/Desktop/FileHandling/program/{i}")
+
+import os
+import random
+
+lstoffiles=[".docx",".js",".xml",".py",".html",".css",".exe",".pdf",".txt",".java",".cpp",".ppt"]
+os.chdir("C:/Users/Dell/Desktop/FileHandling/program")
+
+path="C:/Users/Dell/Desktop/FileHandling/program"
+print(os.path.isfile("ram2.txt"))

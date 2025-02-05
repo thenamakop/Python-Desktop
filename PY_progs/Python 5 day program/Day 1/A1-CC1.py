@@ -1,0 +1,5 @@
+print("Welcome To rectangle area calculator:-")
+print("Please enter all of the following in metric units")
+length = int(input("Enter the Length of the Rectangle: "))
+breadth = int(input("Enter the Breadth of the Rectangle: "))
+area = print("The Area of the Rectangle is: ", length*breadth,"meters square")

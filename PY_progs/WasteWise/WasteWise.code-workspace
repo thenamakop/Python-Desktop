@@ -1,0 +1,13 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "../../Proj/HDIMS"
+    }
+  ],
+  "settings": {
+    "liveServer.settings.multiRootWorkspaceName": "WasteWise"
+  }
+}

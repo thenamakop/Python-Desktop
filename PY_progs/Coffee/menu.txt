@@ -1,0 +1,18 @@
+menu = {
+  "Beverages": [
+    {"name": "Espresso (single shot)", "price": 35},
+    {"name": "Filter Coffee", "price": 30},
+    {"name": "Cafe Latte (small)", "price": 55},
+    {"name": "Cappuccino (small)", "price": 65},
+    {"name": "Iced Coffee", "price": 60},
+    {"name": "Cold Brew Coffee", "price": 70, "tip": "Stronger, potentially more economical"},
+    {"name": "Tea (hot or iced)", "price": 35}
+  ],
+  "Food": [
+    {"name": "Bakery Items (croissants, muffins, cookies)", "price": 35},
+    {"name": "Toast with Butter/Jam", "price": 25},
+    {"name": "Veg Sandwich", "price": 50},
+    {"name": "Egg Sandwich", "price": 60},
+    {"name": "Cake Slice", "price": 75}
+  ]
+}
