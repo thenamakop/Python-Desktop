@@ -15,9 +15,9 @@ class TicTacToe:
         self.game_mode = None  # 'pvp' or 'pvc'
         self.player_symbol = None
         self.computer_symbol = None
+        self.winning_combo = None
 
         self.create_welcome_screen()
-
         self.window.mainloop()
 
     def create_welcome_screen(self):
@@ -75,6 +75,7 @@ class TicTacToe:
         self.clear_window()
         self.current_player = "X"
         self.board = [""] * 9
+        self.winning_combo = None
 
         # Game Board
         self.buttons = []
@@ -115,66 +116,63 @@ class TicTacToe:
         if self.game_mode == "pvc" and self.current_player == self.computer_symbol:
             self.computer_move()
 
-    def animate_button(self, button, symbol):
-        colors = {"X": "#E74C3C", "O": "#3498DB"}
-        button.config(fg=colors[symbol])
-        for i in range(0, 255, 5):
-            if symbol == "X":
-                color = "#%02x%02x%02x" % (231, 76 + i, 60 + i)
-            else:
-                color = "#%02x%02x%02x" % (52 + i, 152 + i, 219)
-            button.config(bg=color)
-            self.window.update()
-            self.window.after(5)
-        button.config(bg="#34495E")
-
     def on_click(self, row, col):
+        if self.winning_combo:
+            return  # Prevent moves after game ends
+
         index = row * 3 + col
-        if self.board[index] == "" and (
-            self.game_mode == "pvp"
-            or (self.game_mode == "pvc" and self.current_player == self.player_symbol)
-        ):
+        if self.board[index] == "":
             self.board[index] = self.current_player
-            self.buttons[row][col].config(text=self.current_player)
-            self.animate_button(self.buttons[row][col], self.current_player)
+            self.buttons[row][col].config(
+                text=self.current_player,
+                fg="#E74C3C" if self.current_player == "X" else "#3498DB",
+            )
 
             if self.check_winner():
-                self.highlight_winning_combination()
-                messagebox.showinfo("Game Over", f"Player {self.current_player} wins!")
-                self.reset_game()
+                self.show_winner()
+                return
             elif "" not in self.board:
-                messagebox.showinfo("Game Over", "It's a tie!")
-                self.reset_game()
-            else:
-                self.current_player = "O" if self.current_player == "X" else "X"
-                self.status_label.config(text=f"Player {self.current_player}'s turn")
+                self.show_tie()
+                return
 
-                if (
-                    self.game_mode == "pvc"
-                    and self.current_player == self.computer_symbol
-                ):
-                    self.window.after(500, self.computer_move)
+            self.switch_player()
+
+            if self.game_mode == "pvc" and self.current_player == self.computer_symbol:
+                self.window.after(500, self.computer_move)
 
     def computer_move(self):
+        if self.winning_combo:
+            return
+
         available_moves = [i for i, val in enumerate(self.board) if val == ""]
         if available_moves:
             move = random.choice(available_moves)
             row = move // 3
             col = move % 3
             self.board[move] = self.computer_symbol
-            self.buttons[row][col].config(text=self.computer_symbol)
-            self.animate_button(self.buttons[row][col], self.computer_symbol)
+            self.buttons[row][col].config(
+                text=self.computer_symbol,
+                fg="#E74C3C" if self.computer_symbol == "X" else "#3498DB",
+            )
 
             if self.check_winner():
-                self.highlight_winning_combination()
-                messagebox.showinfo("Game Over", "Computer wins!")
-                self.reset_game()
+                self.show_winner()
+                return
             elif "" not in self.board:
-                messagebox.showinfo("Game Over", "It's a tie!")
-                self.reset_game()
-            else:
-                self.current_player = self.player_symbol
-                self.status_label.config(text=f"Player {self.current_player}'s turn")
+                self.show_tie()
+                return
+
+            self.switch_player()
+
+    def switch_player(self):
+        self.current_player = "O" if self.current_player == "X" else "X"
+        self.status_label.config(
+            text=f"Player {self.current_player}'s turn"
+            if self.game_mode == "pvp"
+            else "Your turn"
+            if self.current_player == self.player_symbol
+            else "Computer's turn"
+        )
 
     def check_winner(self):
         win_combinations = [
@@ -195,24 +193,46 @@ class TicTacToe:
                 return True
         return False
 
-    def highlight_winning_combination(self):
+    def show_winner(self):
+        # Highlight winning combination
         for index in self.winning_combo:
             row = index // 3
             col = index % 3
             self.buttons[row][col].config(bg="#27AE60")
 
+        winner = self.current_player
+        if self.game_mode == "pvc":
+            winner = "You" if winner == self.player_symbol else "Computer"
+        messagebox.showinfo("Game Over", f"{winner} wins!")
+        self.reset_game()
+
+    def show_tie(self):
+        messagebox.showinfo("Game Over", "It's a tie!")
+        self.reset_game()
+
     def reset_game(self):
         self.board = [""] * 9
+        self.winning_combo = None
         for row in self.buttons:
             for btn in row:
                 btn.config(text="", bg="#34495E")
         if self.game_mode == "pvc":
-            self.current_player = self.player_symbol
-            if self.player_symbol == "O":
+            self.current_player = (
+                self.computer_symbol
+                if self.player_symbol == "O"
+                else self.player_symbol
+            )
+            if self.current_player == self.computer_symbol:
                 self.window.after(500, self.computer_move)
         else:
             self.current_player = "X"
-        self.status_label.config(text=f"Player {self.current_player}'s turn")
+        self.status_label.config(
+            text=f"Player {self.current_player}'s turn"
+            if self.game_mode == "pvp"
+            else "Your turn"
+            if self.current_player == self.player_symbol
+            else "Computer's turn"
+        )
 
     def clear_window(self):
         for widget in self.window.winfo_children():
