@@ -1,125 +1,111 @@
 import tkinter as tk
-import tkinter.messagebox as messagebox
+from tkinter import messagebox
 import random
 
 
 class SudokuGenerator:
-    def _init_(self):
-        self.solved_grid = self.generate_sudoku()
-        self.puzzle_grid = self.remove_numbers(self.solved_grid)
+    def __init__(self):
+        self.solved_grid = self.generate_solved_sudoku()
+        self.puzzle_grid = self.create_puzzle()
 
-    def generate_sudoku(self):
-        """Generate a valid Sudoku grid using backtracking with diagonal initialization"""
-        while True:
-            grid = [[0 for _ in range(9)] for _ in range(9)]
-            self.fill_diagonal_boxes(grid)
-            if self.solve_sudoku(grid):
-                return grid
+    def generate_solved_sudoku(self):
+        """Generate a valid solved Sudoku grid using backtracking"""
+        grid = [[0 for _ in range(9)] for _ in range(9)]
+        self.fill_diagonal(grid)
+        self.solve(grid)
+        return grid
 
-    def fill_diagonal_boxes(self, grid):
-        """Fill the three diagonal 3x3 boxes with random numbers"""
+    def fill_diagonal(self, grid):
+        """Fill diagonal 3x3 boxes with random numbers"""
         for i in range(0, 9, 3):
-            self.fill_box(grid, i, i)
+            nums = list(range(1, 10))
+            random.shuffle(nums)
+            for row in range(3):
+                for col in range(3):
+                    grid[i + row][i + col] = nums.pop()
 
-    @staticmethod
-    def fill_box(grid, row, col):
-        """Fill a 3x3 box starting at (row, col) with random numbers 1-9"""
-        numbers = list(range(1, 10))
-        random.shuffle(numbers)
-        index = 0
-        for i in range(3):
-            for j in range(3):
-                grid[row + i][col + j] = numbers[index]
-                index += 1
-
-    def solve_sudoku(self, grid):
-        """Solve the Sudoku grid using backtracking with random number selection"""
+    def solve(self, grid):
+        """Solve the Sudoku using backtracking"""
         find = self.find_empty(grid)
         if not find:
-            return True  # Puzzle solved
+            return True
         row, col = find
 
-        numbers = list(range(1, 10))
-        random.shuffle(numbers)
-        for num in numbers:
+        for num in random.sample(range(1, 10), 9):
             if self.is_valid(grid, row, col, num):
                 grid[row][col] = num
-                if self.solve_sudoku(grid):
+                if self.solve(grid):
                     return True
-                grid[row][col] = 0  # Backtrack
+                grid[row][col] = 0
         return False
 
-    @staticmethod
-    def find_empty(grid):
-        """Find the next empty cell (0) in the grid"""
+    def find_empty(self, grid):
+        """Find next empty cell"""
         for i in range(9):
             for j in range(9):
                 if grid[i][j] == 0:
                     return (i, j)
         return None
 
-    @staticmethod
-    def is_valid(grid, row, col, num):
-        """Check if placing 'num' at (row, col) is valid"""
+    def is_valid(self, grid, row, col, num):
+        """Check if number placement is valid"""
         # Check row
         if num in grid[row]:
             return False
 
         # Check column
-        for i in range(9):
-            if grid[i][col] == num:
-                return False
+        if num in [grid[i][col] for i in range(9)]:
+            return False
 
         # Check 3x3 box
-        box_row = (row // 3) * 3
-        box_col = (col // 3) * 3
+        start_row, start_col = 3 * (row // 3), 3 * (col // 3)
         for i in range(3):
             for j in range(3):
-                if grid[box_row + i][box_col + j] == num:
+                if grid[start_row + i][start_col + j] == num:
                     return False
         return True
 
-    @staticmethod
-    def remove_numbers(grid, count=40):
-        """Remove numbers from the solved grid to create the puzzle"""
-        puzzle = [row.copy() for row in grid]
-        cells = [(i, j) for i in range(9) for j in range(9)]
-        random.shuffle(cells)
+    def create_puzzle(self):
+        """Create puzzle by removing numbers from solved grid"""
+        puzzle = [row.copy() for row in self.solved_grid]
+        empty_cells = random.randint(40, 55)  # Adjust difficulty here
 
-        removed = 0
-        for i, j in cells:
-            if removed >= count:
-                break
-            if puzzle[i][j] != 0:
-                puzzle[i][j] = 0
-                removed += 1
+        for _ in range(empty_cells):
+            row, col = random.randint(0, 8), random.randint(0, 8)
+            while puzzle[row][col] == 0:
+                row, col = random.randint(0, 8), random.randint(0, 8)
+            puzzle[row][col] = 0
         return puzzle
 
 
-class SudokuUI:
-    def _init_(self, master):
+class SudokuGUI:
+    def __init__(self, master):
         self.master = master
-        self.master.title("Sudoku")
+        self.master.title("Sudoku Solver")
         self.game = SudokuGenerator()
-        self.entries = []
-        self.create_widgets()
+        self.cells = []
+        self.create_grid()
+        self.create_controls()
 
-    def create_widgets(self):
-        """Create the Sudoku grid and control buttons"""
-        # Create 9x9 grid of Entry widgets
+    def create_grid(self):
+        """Create 9x9 grid of Entry widgets"""
+        frame = tk.Frame(self.master)
+        frame.pack(padx=10, pady=10)
+
         for i in range(9):
-            row_entries = []
+            row = []
             for j in range(9):
                 entry = tk.Entry(
-                    self.master,
+                    frame,
                     width=2,
                     font=("Arial", 24),
                     justify="center",
-                    bg="white",
+                    validate="key",
+                    validatecommand=(self.master.register(self.validate_input), "%P"),
                 )
-                entry.grid(row=i, column=j, padx=1, pady=1)
+                entry.grid(row=i, column=j, padx=1, pady=1, ipady=5)
 
-                # Add thicker borders between 3x3 boxes
+                # Add thicker borders for 3x3 boxes
                 if i % 3 == 0 and i != 0:
                     entry.grid(pady=(3, 0))
                 if j % 3 == 0 and j != 0:
@@ -130,125 +116,90 @@ class SudokuUI:
                 if value != 0:
                     entry.insert(0, str(value))
                     entry.config(state="disabled", disabledbackground="#f0f0f0")
-                else:
-                    entry.config(
-                        validate="key",
-                        validatecommand=(
-                            self.master.register(self.validate_input),
-                            "%P",
-                        ),
-                    )
-                row_entries.append(entry)
-            self.entries.append(row_entries)
+                row.append(entry)
+            self.cells.append(row)
 
-        # Control buttons
-        check_button = tk.Button(
-            self.master,
+    def create_controls(self):
+        """Create control buttons"""
+        control_frame = tk.Frame(self.master)
+        control_frame.pack(pady=10)
+
+        tk.Button(
+            control_frame,
             text="Check Solution",
             command=self.check_solution,
-            padx=10,
-            pady=5,
-        )
-        check_button.grid(row=9, column=0, columnspan=4, pady=10)
+            padx=20,
+            pady=10,
+        ).pack(side=tk.LEFT, padx=5)
 
-        new_game_button = tk.Button(
-            self.master, text="New Game", command=self.new_game, padx=10, pady=5
-        )
-        new_game_button.grid(row=9, column=5, columnspan=4, pady=10)
+        tk.Button(
+            control_frame,
+            text="Solve Puzzle",
+            command=self.solve_puzzle,
+            padx=20,
+            pady=10,
+        ).pack(side=tk.LEFT, padx=5)
 
-    @staticmethod
-    def validate_input(new_value):
-        """Validate user input to allow only 1-9 or empty"""
-        return new_value == "" or (new_value.isdigit() and 1 <= int(new_value) <= 9)
+        tk.Button(
+            control_frame, text="New Puzzle", command=self.new_puzzle, padx=20, pady=10
+        ).pack(side=tk.LEFT, padx=5)
+
+    def validate_input(self, value):
+        """Validate cell input (1-9 or empty)"""
+        return value == "" or (
+            len(value) == 1 and value.isdigit() and 1 <= int(value) <= 9
+        )
 
     def check_solution(self):
-        """Validate the current state of the grid against Sudoku rules"""
-        # Convert entries to integer grid
-        user_grid = []
-        has_empty = False
+        """Verify user's solution against solved grid"""
         for i in range(9):
-            row = []
             for j in range(9):
-                value = self.entries[i][j].get()
-                if not value:
-                    has_empty = True
-                    row.append(0)
+                cell_value = self.cells[i][j].get()
+                if cell_value == "":
+                    messagebox.showwarning("Incomplete", "Please fill all cells!")
+                    return
+                if int(cell_value) != self.game.solved_grid[i][j]:
+                    self.cells[i][j].config(bg="#ff9999")
                 else:
-                    row.append(int(value))
-            user_grid.append(row)
+                    self.cells[i][j].config(bg="white")
 
-        if has_empty:
-            messagebox.showwarning("Incomplete", "Please fill all cells!")
-            return
+        # Check if all cells are correct
+        all_correct = all(
+            self.cells[i][j].get() == str(self.game.solved_grid[i][j])
+            for i in range(9)
+            for j in range(9)
+        )
 
-        # Check rows, columns, and boxes
-        valid = True
-        error_cells = set()
+        if all_correct:
+            messagebox.showinfo("Success!", "Congratulations! Puzzle solved correctly!")
+        else:
+            messagebox.showerror("Errors Found", "Some cells contain incorrect values")
 
-        # Check rows and columns
-        for i in range(9):
-            row = user_grid[i]
-            col = [user_grid[j][i] for j in range(9)]
-            for check, axis in [(row, "row"), (col, "col")]:
-                seen = set()
-                duplicates = set()
-                for idx, num in enumerate(check):
-                    if num in seen:
-                        valid = False
-                        if axis == "row":
-                            duplicates.add((i, idx))
-                        else:
-                            duplicates.add((idx, i))
-                    seen.add(num)
-                error_cells.update(duplicates)
-
-        # Check 3x3 boxes
-        for box_i in range(0, 9, 3):
-            for box_j in range(0, 9, 3):
-                seen = set()
-                duplicates = set()
-                for i in range(3):
-                    for j in range(3):
-                        row = box_i + i
-                        col = box_j + j
-                        num = user_grid[row][col]
-                        if num in seen:
-                            valid = False
-                            duplicates.add((row, col))
-                        seen.add(num)
-                error_cells.update(duplicates)
-
-        # Highlight errors
+    def solve_puzzle(self):
+        """Fill in the complete solution"""
         for i in range(9):
             for j in range(9):
-                bg_color = "#ff9999" if (i, j) in error_cells else "white"
-                self.entries[i][j].config(bg=bg_color)
+                if self.game.puzzle_grid[i][j] == 0:
+                    self.cells[i][j].delete(0, tk.END)
+                    self.cells[i][j].insert(0, str(self.game.solved_grid[i][j]))
+                    self.cells[i][j].config(bg="#d0f0d0", state="disabled")
 
-        if valid:
-            messagebox.showinfo("Congratulations!", "You solved the Sudoku!")
-        else:
-            messagebox.showerror(
-                "Invalid Solution",
-                "There are duplicate numbers in rows, columns, or boxes!",
-            )
-
-    def new_game(self):
-        """Generate a new puzzle and reset the UI"""
+    def new_puzzle(self):
+        """Generate and display a new puzzle"""
         self.game = SudokuGenerator()
         for i in range(9):
             for j in range(9):
-                entry = self.entries[i][j]
-                entry.config(state="normal", bg="white")
-                entry.delete(0, tk.END)
+                self.cells[i][j].config(state="normal", bg="white")
+                self.cells[i][j].delete(0, tk.END)
                 value = self.game.puzzle_grid[i][j]
                 if value != 0:
-                    entry.insert(0, str(value))
-                    entry.config(state="disabled", disabledbackground="#f0f0f0")
-                else:
-                    entry.config(state="normal")
+                    self.cells[i][j].insert(0, str(value))
+                    self.cells[i][j].config(
+                        state="disabled", disabledbackground="#f0f0f0"
+                    )
 
 
-if __name__ == "_main_":
+if __name__ == "__main__":
     root = tk.Tk()
-    SudokuUI()
+    SudokuGUI(root)
     root.mainloop()
