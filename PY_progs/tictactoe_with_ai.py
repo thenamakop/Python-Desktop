@@ -18,7 +18,7 @@ class TicTacToe(Entity):
         self.current_player = "X"
         self.game_mode = None
         self.difficulty = None
-        self.board = [["" for _ in range(3)] for _ in range(3)]~
+        self.board = [["" for _ in range(3)] for _ in range(3)]
         self.ai = TicTacToeAI()
         self.cells = []
         self.state = MENU
