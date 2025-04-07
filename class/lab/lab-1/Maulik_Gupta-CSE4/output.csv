@@ -1,4 +1,7 @@
-Name,Age,City
-Alice,25,New York
-Bob,30,London
-Charlie,35,Berlin
+Name,Age,City,Marks
+Alice,25,New York,30
+Bob,30,London,27
+Charlie,35,Berlin,25
+Maulik,18,Jaipur,30
+Sethi,19,Jhansi,18
+Kalkal,19,Pune,20
