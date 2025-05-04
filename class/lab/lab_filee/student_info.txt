@@ -1,0 +1,4 @@
+Name: Maulik Gupta
+Age: 18
+Course: Programming
+Status: Active
