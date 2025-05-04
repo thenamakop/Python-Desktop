@@ -1,4 +1,4 @@
-Name: Maulik Gupta
-Age: 18
-Course: Programming
+Name: Ashmit Yadav
+Age: 20
+Course: BEEE
 Status: Active
