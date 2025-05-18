@@ -1,0 +1,3 @@
+Hello world this is a test file.
+This file contains some words for frequency counting.
+Hello again, hope this works well.
