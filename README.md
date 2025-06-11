@@ -14,6 +14,7 @@ Outcomes and summaries reflecting my learning milestones
 
 ## 🗂️ Structure
 The repository is organized as follows:
+
 '''
 /  
 ├── .github/            # GitHub-specific files (e.g., workflows, issue templates)  
