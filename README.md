@@ -1,7 +1,7 @@
-Python-Desktop
+#Python-Desktop
 Welcome to Python-Desktop!This repository is a comprehensive collection of my Python code and projects, created during my school courses, college assignments, personal exploration, and side projects. It serves as a portfolio of my Python learning journey, showcasing my skills, growth, and achievements in programming.
 
-📚 About
+##📚 About
 This repository includes:
 
 Python scripts and solutions from various academic courses
@@ -11,8 +11,9 @@ Notes and documentation for significant projects
 Outcomes and summaries reflecting my learning milestones
 
 
-🗂️ Structure
+##🗂️ Structure
 The repository is organized as follows:
+'''
 /  
 ├── .github/            # GitHub-specific files (e.g., workflows, issue templates)  
 ├── .mypy_cache/        # Cache for mypy type checker (root level)  
@@ -36,12 +37,12 @@ The repository is organized as follows:
 │   ├── WasteWise/      # Project related to waste management & efficiency  implementing efficient routing stratiegies to be used by garbage collection trucks
 │   └── Website/        # Website-related projects or scripts  
 └── README.md           # This file  
-
+'''
 
 Note: Each folder may contain subfolders and additional README files with specific details and outcomes.
 
 
-🚀 Key Outcomes
+##🚀 Key Outcomes
 Through the projects in this repository, I have achieved the following:
 
 Python Fundamentals: Mastered data structures, algorithms, and object-oriented programming
@@ -52,7 +53,7 @@ Problem-Solving: Enhanced my debugging and critical thinking skills
 Documentation: Improved my ability to organize and document code effectively
 
 
-🛠️ How to Use
+##🛠️ How to Use
 
 Clone the repository:git clone https://github.com/your-username/Python-Desktop.git
 
@@ -67,7 +68,7 @@ Some projects may require dependencies. Check for a requirements.txt file or ins
 
 
 
-📝 Technologies Used
+##📝 Technologies Used
 
 Python 3.x
 GUI Frameworks: Tkinter, PyQt
@@ -75,10 +76,10 @@ Data Libraries: pandas, numpy, matplotlib, seaborn
 Automation Libraries: Requests, BeautifulSoup (where applicable)
 
 
-📈 Progress Tracking
+##📈 Progress Tracking
 I will continue to update this repository with new projects, scripts, and insights as I advance in my Python journey.
 
-🤝 Contributing
+##🤝 Contributing
 This repository is primarily for personal use and archiving. However, I welcome feedback or suggestions! Feel free to open an issue if you have ideas to share.
 
 📬 Contact
