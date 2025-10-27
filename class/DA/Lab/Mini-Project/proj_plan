@@ -1,0 +1,50 @@
+**Project Plan: Steam Games Analysis**
+
+**Objective:** To analyze the Steam dataset to identify factors that contribute to a game's success, measured by the number of positive ratings and owner count.
+
+**Step 1: Problem Definition & Dataset Selection**
+*   **Objective:** Analyze the Steam dataset to understand the characteristics of successful games. I will focus on predicting the 'positive_ratings' and 'owners' count based on other features.
+*   **Dataset:** `steam.csv` from Kaggle. It contains information about 27,000+ games on Steam.
+
+**Step 2: Data Cleaning & Preparation**
+1.  **Load Data:** Load `steam.csv` into a pandas DataFrame.
+2.  **Handle Missing Values:** Check for missing values in columns like `price`, `positive_ratings`, `owners`, etc., and decide on an imputation strategy (e.g., fill with mean/median or drop rows).
+3.  **Clean Categorical Features:** The `categories`, `genres`, and `steamspy_tags` columns are semi-colon separated. I will need to parse them into lists of strings.
+4.  **Feature Engineering:**
+    *   Create a `release_year` feature from the `release_date` column.
+    *   Create a `is_free` feature from the `price` column.
+    *   Create a `rating_ratio` from `positive_ratings` and `negative_ratings`.
+5.  **Outlier Handling:** Investigate outliers in `price`, `positive_ratings`, and `owners` and decide how to handle them (e.g., log transformation).
+
+**Step 3: Exploratory Data Analysis (EDA)**
+1.  **Univariate Analysis:**
+    *   Plot distributions of numerical features like `price`, `positive_ratings`, and `average_playtime`.
+    *   Plot bar charts for categorical features like `developer`, `publisher`, and `genres`.
+2.  **Bivariate Analysis:**
+    *   Create scatter plots to visualize the relationship between `price` and `positive_ratings`.
+    *   Use box plots to compare `positive_ratings` across different `genres`.
+    *   Generate a correlation matrix to identify relationships between numerical features.
+
+**Step 4: Statistical Analysis & Hypothesis Testing**
+1.  **Hypothesis 1:** "Free-to-play games have a significantly higher number of owners than paid games."
+    *   **Test:** Two-sample t-test.
+2.  **Hypothesis 2:** "There is a positive correlation between the number of achievements and the number of positive ratings."
+    *   **Test:** Pearson correlation test.
+
+**Step 5: Modeling and Pattern Discovery**
+*   **Regression:** I will build a regression model to predict `positive_ratings`.
+    *   **Features:** `price`, `achievements`, `release_year`, and encoded `genres`.
+    *   **Model:** Linear Regression or a tree-based model like RandomForest.
+    *   **Evaluation:** R-squared, RMSE.
+
+**Step 6: Interpretation & Inference**
+*   Summarize the key findings from EDA and modeling.
+*   Discuss the factors that are most predictive of a game's success.
+
+**Step 7: Visualization and Presentation**
+*   Create high-quality visualizations using Matplotlib and Seaborn to present the findings.
+*   Ensure all plots have titles and labels.
+
+**Step 8: Conclusion**
+*   Provide a summary of the analysis and conclusions.
+*   Discuss any limitations of the analysis and potential future work.
