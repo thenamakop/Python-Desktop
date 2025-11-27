@@ -1,0 +1,40 @@
+Grover’s Algorithm (Search in an Unsorted Database)
+
+Goal: Find x* such that f(x*) = 1 among N items with O(√N) queries.
+
+Notation:
+• Uniform superposition |s⟩ = (1/√N) ∑_{x=0}^{N−1} |x⟩
+• Oracle O: O|x⟩ = (−1)^{f(x)} |x⟩ (phase flip on the marked item)
+• Diffusion D: D = 2|s⟩⟨s| − I (inversion about the mean)
+
+Main Steps:
+1) Initialization into equal superposition
+   • Start from |0…0⟩.
+   • Apply Hadamard H on each qubit: |ψ₀⟩ = |s⟩ = (1/√N) ∑_{x} |x⟩.
+
+   Diagram (2 qubits):
+   |00⟩ — H —
+   |01⟩ — H —  →  equal amplitudes over {|00⟩, |01⟩, |10⟩, |11⟩}
+   |10⟩ — H —
+   |11⟩ — H —
+
+2) Oracle operation (mark the correct element)
+   • Implement a selective phase flip on the target basis state |x*⟩.
+   • Effect: amplitude of |x*⟩ becomes negative relative to others.
+
+   Diagram idea: all states unchanged except the marked one gets a phase −.
+
+3) Diffusion operator (amplitude amplification)
+   • Reflect the state about the average amplitude: D = 2|s⟩⟨s| − I.
+   • Result: increases the amplitude of the marked state and decreases others.
+   • For 2 qubits, one implementation: H⊗H → X⊗X → CZ → X⊗X → H⊗H.
+
+4) Measurement of the final state
+   • Measure in the computational basis.
+   • With ≈ π/4 · √N iterations, the marked item appears with high probability.
+
+Two-Qubit Example (N = 4):
+• Target = |11⟩. One Grover iteration is typically sufficient.
+• Oracle: CZ applies a phase −1 to |11⟩.
+• Diffusion: H⊗H, X⊗X, CZ, X⊗X, H⊗H.
+• Measure: outcome is |11⟩ with high probability.

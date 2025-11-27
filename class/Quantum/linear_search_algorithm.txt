@@ -1,0 +1,16 @@
+Classical Linear Search Algorithm
+
+Given an input list L = [a_0, a_1, ..., a_{N-1}] of integers and a target t ∈ ℤ.
+
+Algorithm:
+1. For i = 0, 1, ..., N − 1:
+   • If a_i = t, output i and halt.
+2. If no i satisfies a_i = t, output "Not Found".
+
+Correctness:
+• The algorithm halts with index i iff ∃ i ∈ {0, ..., N − 1} such that a_i = t.
+• Otherwise, after examining all elements, it reports "Not Found".
+
+Complexity:
+• Time: O(N) comparisons in the worst case.
+• Space: O(1) auxiliary space.
