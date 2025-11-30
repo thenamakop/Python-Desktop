@@ -1,3 +1,9 @@
+---
+title: Classical vs Quantum Search — Obsidian View
+tags: [quantum, algorithms, grover, linear-search]
+date: 2025-11-30
+---
+
 # Classical vs Quantum Search: Assignment Solutions
 
 **Objective**
@@ -8,22 +14,20 @@
 
 **1. Classical Linear Search**
 
-- Input: a list `L = [a_0, a_1, \dots, a_{N-1}]` of integers and a target `t \in \mathbb{Z}`
+**1a. Algorithm (with mathematical notation)**
 
-  1. Set `i \leftarrow 0`.
-  2. While `i < N`:
-     - Compare `a_i` with `t`.
-     - If `a_i = t`, output the index `i` and stop.
-     - Otherwise, set `i \leftarrow i + 1` and continue.
-  3. If the loop finishes without finding `t`, output `"Not Found"`.
-- Correctness: the algorithm outputs an index `i` iff there exists `i \in \{0,\dots,N-1\}` with `a_i = t`; else it reports `"Not Found"`.
-- Complexity: time `O(N)`, space `O(1)`.
+- Input: a list $L = [a_0, a_1, \dots, a_{N-1}]$ of integers and a target $t \in \mathbb{Z}$
+- Steps (school-style):
+  1. Set $i \leftarrow 0$.
+  2. While $i < N$:
+     - Compare $a_i$ with $t$.
+     - If $a_i = t$, output the index $i$ and stop.
+     - Otherwise, set $i \leftarrow i + 1$ and continue.
+  3. If the loop finishes without finding $t$, output "Not Found".
 - Correctness: the algorithm outputs an index $i$ iff there exists $i \in \{0,\dots,N-1\}$ with $a_i = t$; else it reports "Not Found".
 - Complexity: time $O(N)$, space $O(1)$.
 
 **1b. Python Program**
-
-- Adapted from `class/quantum/linear_search.py`.
 
 ```python
 def linear_search(arr, t):
@@ -47,35 +51,41 @@ if __name__ == "__main__":
     else:
         print("Not Found")
 ```
-- Classical search complexity: `O(N)`
-- Quantum search complexity: `O(\sqrt{N})`
+
+**2. Quantum Search — Grover’s Algorithm**
 
 - Classical search complexity: $O(N)$
 - Quantum search complexity: $O(\sqrt{N})$
-  - Uniform superposition `|s\rangle = \tfrac{1}{\sqrt{N}} \sum_{x=0}^{N-1} |x\rangle`
-  - Oracle `O`: `O|x\rangle = (-1)^{f(x)} |x\rangle` (phase flip on the marked item)
-  - Diffusion `D = 2|s\rangle\langle s| - I` (inversion about the mean)
+
+**2a. Main Steps (simple, school-style)**
+
 - Notation:
   - Uniform superposition $|s\rangle = \tfrac{1}{\sqrt{N}} \sum_{x=0}^{N-1} |x\rangle$
-     - Start from `|00\dots0\rangle` and apply Hadamard `H` on each qubit so all basis states have equal amplitude.
+  - Oracle $O$: $O|x\rangle = (-1)^{f(x)} |x\rangle$ (phase flip on the marked item)
   - Diffusion $D = 2|s\rangle\langle s| - I$ (inversion about the mean)
-     - Apply a selective phase flip to the basis state `|x^*\rangle` that encodes the target.
+- Steps:
   1. Initialization into equal superposition
      - Start from $|00\dots 0\rangle$ and apply Hadamard $H$ on each qubit so all basis states have equal amplitude.
-     - For 2 qubits: `H⊗H → X⊗X → CZ → X⊗X → H⊗H`.
+  2. Oracle operation to mark the correct element
      - Apply a selective phase flip to the basis state $|x^*\rangle$ that encodes the target.
-     - Measure in the computational basis; the marked item appears with high probability after ≈ `\tfrac{\pi}{4}\sqrt{N}` iterations.
-- Two-qubit example (`N = 4`): target `|11\rangle`
-  - Oracle: `CZ` applies a `−1` phase to `|11\rangle`.
-  - Diffusion: `H⊗H, X⊗X, CZ, X⊗X, H⊗H`.
+  3. Diffusion operator (amplitude amplification)
+     - Reflect the amplitudes about their average to increase the marked state’s amplitude.
+     - For 2 qubits: $H \otimes H \to X \otimes X \to CZ \to X \otimes X \to H \otimes H$.
+  4. Measurement of the final state
      - Measure in the computational basis; the marked item appears with high probability after ≈ $\tfrac{\pi}{4}\sqrt{N}$ iterations.
 - Two-qubit example ($N = 4$): target $|11\rangle$
   - Oracle: $CZ$ applies a $-1$ phase to $|11\rangle$.
   - Diffusion: $H\otimes H, X\otimes X, CZ, X\otimes X, H\otimes H$.
 
-**2b. Qiskit Program (2 qubits → 4 items)**
+```mermaid
+flowchart TD
+    A[Start |00...0⟩] --> B[Apply H to each qubit \n Equal superposition]
+    B --> C[Oracle: phase flip on |x*⟩]
+    C --> D[Diffusion: invert about mean]
+    D --> E[Measure]
+```
 
-- Adapted from `class/quantum/grover_qiskit.py`. Includes initialization, oracle, diffusion, and measurement.
+**2b. Qiskit Program (2 qubits → 4 items)**
 
 ```python
 from qiskit import QuantumCircuit, transpile
