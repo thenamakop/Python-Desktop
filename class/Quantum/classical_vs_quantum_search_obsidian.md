@@ -27,6 +27,15 @@ date: 2025-11-30
 - Correctness: the algorithm outputs an index $i$ iff there exists $i \in \{0,\dots,N-1\}$ with $a_i = t$; else it reports "Not Found".
 - Complexity: time $O(N)$, space $O(1)$.
 
+**Mathematical Representation**
+
+$$
+\text{Problem: Given } L=(a_0,\dots,a_{N-1})\in\mathbb{Z}^N,\; t\in\mathbb{Z}.\\
+\text{Goal: find } i^* \text{ s.t. } a_{i^*}=t \text{ or report } \bot.\\
+i^* = \min\{ i\in[0,N-1]: a_i=t\}\;\text{ if set nonempty, else }\;\bot.\\
+\text{Worst-case comparisons: } C(N)=N,\; \text{time } O(N),\; \text{space } O(1).
+$$
+
 **1b. Python Program**
 
 ```python
@@ -75,7 +84,16 @@ if __name__ == "__main__":
      - Measure in the computational basis; the marked item appears with high probability after ≈ $\tfrac{\pi}{4}\sqrt{N}$ iterations.
 - Two-qubit example ($N = 4$): target $|11\rangle$
   - Oracle: $CZ$ applies a $-1$ phase to $|11\rangle$.
-  - Diffusion: $H\otimes H, X\otimes X, CZ, X\otimes X, H\otimes H$.
+- Diffusion: $H\otimes H, X\otimes X, CZ, X\otimes X, H\otimes H$.
+
+**Mathematical Representation**
+
+$$
+|s\rangle = \tfrac{1}{\sqrt{N}}\sum_{x=0}^{N-1}|x\rangle,\quad O = I - 2|x^*\rangle\langle x^*|,\quad D = 2|s\rangle\langle s| - I,\quad G = D\,O.\\
+\sin\theta = \tfrac{1}{\sqrt{N}},\quad G^k|s\rangle = \sin((2k+1)\theta)|x^*\rangle + \cos((2k+1)\theta)|x_\perp\rangle.\\
+k_\text{opt} \approx \left\lfloor \tfrac{\pi}{4\theta} - \tfrac{1}{2} \right\rfloor \approx \left\lfloor \tfrac{\pi}{4}\sqrt{N} \right\rfloor,\; \text{queries } O(\sqrt{N}).\\
+N=4 \Rightarrow \theta=\pi/6,\; k_\text{opt}=1.
+$$
 
 ```mermaid
 flowchart TD
